@@ -1,21 +1,17 @@
 package cl.duoc.integracion.apiwebservice.Servicios.impl;
 
-
+import cl.duoc.integracion.apiwebservice.Entidades.HistorialDePrecio;
 import cl.duoc.integracion.apiwebservice.Entidades.Producto;
-import cl.duoc.integracion.apiwebservice.Repositorios.ClienteRepository;
-import cl.duoc.integracion.apiwebservice.Repositorios.EmpleadoRepository;
 import cl.duoc.integracion.apiwebservice.Repositorios.HistorialDePrecioRepository;
 import cl.duoc.integracion.apiwebservice.Repositorios.ProductoRepository;
-
 import cl.duoc.integracion.apiwebservice.Servicios.ProductoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.OptionalDouble;
 
 @Service
 public class ProductoServiceImpl implements ProductoService{
@@ -24,16 +20,10 @@ public class ProductoServiceImpl implements ProductoService{
     private ProductoRepository productoRepository;
 
     @Autowired
-    private EmpleadoRepository empleadoRepository;
-
-    @Autowired
-    private ClienteRepository clienteRepository;
-
-
-    @Autowired
     private HistorialDePrecioRepository historialDePrecioRepository;
 
-    // PRODUCTO
+
+    // === PRODUCTO ===
 
     @Override
     public List<Producto> listarProducto(){
@@ -101,13 +91,23 @@ public class ProductoServiceImpl implements ProductoService{
                     case "categoriaProducto":
                         producto.setCategoriaProducto(value.toString());
                         break;
-                    case "sucursalProducto":
+                    case "sucursal":
                         producto.setSucursal(value.toString());
                         break;
                     case "precioProducto":
                         try{
-                            BigDecimal nuevoPrecio = new BigDecimal(value.toString());
-                            producto.setPrecioProducto(nuevoPrecio);
+                            Double nuevoPrecio = Double.valueOf(value.toString());
+                            if(!producto.getPrecioProducto().equals(nuevoPrecio)){
+                                HistorialDePrecio historial = new HistorialDePrecio();
+                                historial.setProducto(producto);
+                                historial.setPrecio(producto.getPrecioProducto());
+                                historial.setFechaInicio(LocalDate.now());
+                                historial.setFechaFin(LocalDate.now());
+
+                                historialDePrecioRepository.save(historial);
+                                
+                                producto.setPrecioProducto(nuevoPrecio);
+                            }
                         }catch(NumberFormatException e){
                             throw new IllegalArgumentException("Precio Invalido "+value);
                         }
@@ -125,10 +125,6 @@ public class ProductoServiceImpl implements ProductoService{
     public void eliminarProducto(Long idProducto){
         productoRepository.deleteById(idProducto);
     }
-
-    // EMPLEADO
-
-
 
     
 }

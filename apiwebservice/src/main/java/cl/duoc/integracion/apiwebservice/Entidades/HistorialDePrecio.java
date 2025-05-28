@@ -10,7 +10,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -26,7 +25,7 @@ public class HistorialDePrecio {
     private Producto producto;
 
     @Column(name = "precio", nullable = false)
-    private BigDecimal precio;
+    private double precio;
 
     @Column(name = "fecha_inicio", nullable = false)
     private LocalDate fechaInicio;
@@ -38,7 +37,7 @@ public class HistorialDePrecio {
     public HistorialDePrecio(){}
 
     //Constructor con parametros
-    public HistorialDePrecio(Integer idHistorialDePrecio, Producto producto, BigDecimal precio, LocalDate fechaInicio,
+    public HistorialDePrecio(Integer idHistorialDePrecio, Producto producto, double precio, LocalDate fechaInicio,
             LocalDate fechaFin) {
         this.idHistorialDePrecio = idHistorialDePrecio;
         this.producto = producto;
@@ -64,11 +63,11 @@ public class HistorialDePrecio {
         this.producto = producto;
     }
 
-    public BigDecimal getPrecio() {
+    public double getPrecio() {
         return precio;
     }
 
-    public void setPrecio(BigDecimal precio) {
+    public void setPrecio(double precio) {
         this.precio = precio;
     }
 

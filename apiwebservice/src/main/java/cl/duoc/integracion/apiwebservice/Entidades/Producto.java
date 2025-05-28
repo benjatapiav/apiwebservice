@@ -6,7 +6,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
-import java.math.BigDecimal;
 
 import jakarta.persistence.Column;
 
@@ -38,8 +37,8 @@ public class Producto {
     @Column(name = "sucursal", nullable = false)
     private String sucursal;
 
-    @Column(name = "precio_producto", precision = 15, scale = 2, nullable = false)
-    private BigDecimal precioProducto;
+    @Column(name = "precio_producto", nullable = false)
+    private Double precioProducto;
 
     
 
@@ -48,7 +47,7 @@ public class Producto {
 
     //Constructor con parametros
         public Producto(Long idProducto, String codigoProducto, String nombreProducto, String marcaProducto,
-            String categoriaProducto, Integer cantidadProducto ,String sucursal, BigDecimal precioProducto) {
+            String categoriaProducto, Integer cantidadProducto ,String sucursal, Double precioProducto) {
                 
         this.idProducto = idProducto;
         this.codigoProducto = codigoProducto;
@@ -117,11 +116,11 @@ public class Producto {
         this.sucursal = sucursal;
     }
 
-    public BigDecimal getPrecioProducto() {
+    public Double getPrecioProducto() {
         return precioProducto;
     }
 
-    public void setPrecioProducto(BigDecimal precioProducto) {
+    public void setPrecioProducto(Double precioProducto) {
         this.precioProducto = precioProducto;
     }
 

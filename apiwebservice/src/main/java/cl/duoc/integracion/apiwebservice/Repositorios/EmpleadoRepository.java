@@ -12,5 +12,6 @@ public interface EmpleadoRepository extends JpaRepository<Empleado, Integer>{
     List<Empleado> findByRolEmpleado(String rolEmpleado);
     Optional<Empleado> findByRutEmpleado(String rutEmpleado);
     Optional<Empleado> findByIdEmpleado(Integer idEmpleado);
+    Optional<Empleado> findByCorreoEmpleado(String correoEmpleado);
     Optional<Empleado> findByCorreoEmpleadoAndClaveEmpleado(String correoEmpleado, String claveEmpleado);
 }
