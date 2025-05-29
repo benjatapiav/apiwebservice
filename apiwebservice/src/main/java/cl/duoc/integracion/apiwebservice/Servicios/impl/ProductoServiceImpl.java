@@ -1,5 +1,7 @@
 package cl.duoc.integracion.apiwebservice.Servicios.impl;
 
+
+import cl.duoc.integracion.apiwebservice.DTO.ProductoDTO;
 import cl.duoc.integracion.apiwebservice.Entidades.HistorialDePrecio;
 import cl.duoc.integracion.apiwebservice.Entidades.Producto;
 import cl.duoc.integracion.apiwebservice.Repositorios.HistorialDePrecioRepository;
@@ -31,23 +33,28 @@ public class ProductoServiceImpl implements ProductoService{
     }
 
     @Override
-    public List<Producto> listarProductoPorNombre(String nombreProducto){
-        return productoRepository.findByNombreProducto(nombreProducto);
+    public List<Producto> listarProductoPorNombreContainingIgnoreCase(String nombreProducto){
+        return productoRepository.findByNombreProductoContainingIgnoreCase(nombreProducto);
     }
 
     @Override
-    public List<Producto> listarProductoPorMarca(String marcaProducto){
-        return productoRepository.findByMarcaProducto(marcaProducto);
+    public List<Producto> listarProductoPorMarcaContainingIgnoreCase(String marcaProducto){
+        return productoRepository.findByMarcaProductoContainingIgnoreCase(marcaProducto);
     }
 
     @Override
-    public List<Producto> listarProductoPorCategoria(String categoriaProducto){
-        return productoRepository.findByCategoriaProducto(categoriaProducto);
+    public List<Producto> listarProductoPorCategoriaContainingIgnoreCase(String categoriaProducto){
+        return productoRepository.findByCategoriaProductoContainingIgnoreCase(categoriaProducto);
+    }
+
+    @Override
+    public List<Producto> listarProductoPorSucursalContainingIgnoreCase(String sucursal){
+        return productoRepository.findBySucursalContainingIgnoreCase(sucursal);
     }
 
     @Override
     public Optional<Producto> obtenerProductoPorId(Long idProducto){
-        return productoRepository.findById(idProducto);
+        return productoRepository.findByIdProducto(idProducto);
     }
 
     @Override
@@ -56,8 +63,24 @@ public class ProductoServiceImpl implements ProductoService{
     }
 
     @Override
-    public Producto crearProducto(Producto producto){
-        return productoRepository.save(producto);
+    public Producto crearProducto(ProductoDTO productoDTO){
+        Optional<Producto> productoExistente = productoRepository.findByCodigoProducto(productoDTO.getCodigoProducto());
+        if(productoExistente.isPresent()){
+            throw new IllegalArgumentException("Ya existe un producto con el codigo: "+productoDTO.getCodigoProducto());
+        }else{
+
+            Producto producto = new Producto();
+            producto.setCodigoProducto(productoDTO.getCodigoProducto());
+            producto.setNombreProducto(productoDTO.getNombreProducto());
+            producto.setCantidadProducto(productoDTO.getCantidadProducto());
+            producto.setCategoriaProducto(productoDTO.getCategoriaProducto());
+            producto.setMarcaProducto(productoDTO.getMarcaProducto());
+            producto.setPrecioProducto(productoDTO.getPrecioProducto());
+            producto.setSucursal(productoDTO.getSucursal());
+    
+            return productoRepository.save(producto);
+        }
+
     }
 
     @Override

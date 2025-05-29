@@ -9,9 +9,10 @@ import java.util.Optional;
 
 @Repository
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
-    List<Producto> findByNombreProducto(String nombreProducto); 
+    List<Producto> findByNombreProductoContainingIgnoreCase(String nombreProducto); 
+    List<Producto> findByMarcaProductoContainingIgnoreCase(String marcaProducto);
+    List<Producto> findByCategoriaProductoContainingIgnoreCase(String categoriaProducto);
+    List<Producto> findBySucursalContainingIgnoreCase(String sucursal);
     Optional<Producto> findByIdProducto(Long idProducto);   
     Optional<Producto> findByCodigoProducto(String codigoProducto);
-    List<Producto> findByMarcaProducto(String marcaProducto);
-    List<Producto> findByCategoriaProducto(String nombreCategoria);
 }

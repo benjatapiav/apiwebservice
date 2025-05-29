@@ -33,6 +33,11 @@ public class EmpleadoServiceImpl implements EmpleadoService{
     }
 
     @Override
+    public List<Empleado> listarEmpleadoPorSucursal(String sucursalEmpleado){
+        return empleadoRepository.findBySucursalEmpleado(sucursalEmpleado);
+    }
+
+    @Override
     public Optional<Empleado> obtenerEmpleadoPorRut(String rutEmpleado){
         return empleadoRepository.findByRutEmpleado(rutEmpleado);
     }

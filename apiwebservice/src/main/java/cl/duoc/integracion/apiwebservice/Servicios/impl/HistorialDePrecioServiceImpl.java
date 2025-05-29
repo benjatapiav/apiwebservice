@@ -18,34 +18,29 @@ import cl.duoc.integracion.apiwebservice.Servicios.HistorialDePrecioService;
 public class HistorialDePrecioServiceImpl implements HistorialDePrecioService {
     
     @Autowired
-    public HistorialDePrecioRepository historialDePreciorRepository;
+    public HistorialDePrecioRepository historialDePrecioRepository;
 
     @Autowired
     public ProductoRepository productoRepository;
 
     @Override
     public List<HistorialDePrecio> listarHistorialPorProducto(Producto producto){
-        return historialDePreciorRepository.findByProducto(producto);
-    }
-
-    @Override
-    public List<HistorialDePrecio> listarHistorialPorProductoOrdenadoPorFechaDesc(Producto producto){
-        return historialDePreciorRepository.findByProductoOrderByFechaDesc(producto);
+        return historialDePrecioRepository.findByProducto(producto);
     }
 
     @Override
     public Optional<HistorialDePrecio> obtenerPrecioPorFechaInicio(LocalDate fechaInicio){
-        return historialDePreciorRepository.findByfechaInicioPrecio(fechaInicio);
+        return historialDePrecioRepository.findByfechaInicio(fechaInicio);
     }
 
     @Override
     public Optional<HistorialDePrecio> obtenerPrecioPorFechaFin(LocalDate fechaFin){
-        return historialDePreciorRepository.findByfechaFinPrecio(fechaFin);
+        return historialDePrecioRepository.findByfechaFin(fechaFin);
     }
 
     @Override
     public void eliminarHistorialDePrecio(Integer idHistorialDePrecio){
-        historialDePreciorRepository.deleteById(idHistorialDePrecio);
+        historialDePrecioRepository.deleteById(idHistorialDePrecio);
     }
 
 }

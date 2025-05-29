@@ -16,6 +16,7 @@ public class Producto {
     //Primary Key IdProducto
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_producto")
     private Long idProducto;
 
     //Columnas

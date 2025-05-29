@@ -13,6 +13,7 @@ public class Empleado {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_empleado")
     private Integer idEmpleado;
 
     @Column(name = "nombre_empleado")
@@ -30,18 +31,22 @@ public class Empleado {
     @Column(name = "rol_empleado")
     private String rolEmpleado;
 
+    @Column(name = "sucursal_empleado")
+    private String sucursalEmpleado;
+
     //Constructo vacio
     public Empleado(){}
     
     //Constructor con parametros
     public Empleado(Integer idEmpleado, String nombreEmpleado, String correoEmpleado, String rutEmpleado,
-            String claveEmpleado, String rolEmpleado) {
+            String claveEmpleado, String rolEmpleado, String sucursalEmpleado) {
         this.idEmpleado = idEmpleado;
         this.nombreEmpleado = nombreEmpleado;
         this.correoEmpleado = correoEmpleado;
         this.rutEmpleado = rutEmpleado;
         this.claveEmpleado = claveEmpleado;
         this.rolEmpleado = rolEmpleado;
+        this.sucursalEmpleado = sucursalEmpleado;
     }
 
 
@@ -92,6 +97,14 @@ public class Empleado {
 
     public void setRolEmpleado(String rolEmpleado) {
         this.rolEmpleado = rolEmpleado;
+    }
+
+    public String getSucursalEmpleado() {
+        return sucursalEmpleado;
+    }
+
+    public void setSucursalEmpleado(String sucursalEmpleado) {
+        this.sucursalEmpleado = sucursalEmpleado;
     }
 
 

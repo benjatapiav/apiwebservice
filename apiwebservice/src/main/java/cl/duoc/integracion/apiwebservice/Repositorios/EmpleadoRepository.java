@@ -10,6 +10,7 @@ import cl.duoc.integracion.apiwebservice.Entidades.Empleado;
 public interface EmpleadoRepository extends JpaRepository<Empleado, Integer>{
     List<Empleado> findByNombreEmpleado(String nombreEmpleado);
     List<Empleado> findByRolEmpleado(String rolEmpleado);
+    List<Empleado> findBySucursalEmpleado(String sucursalEmpleado);
     Optional<Empleado> findByRutEmpleado(String rutEmpleado);
     Optional<Empleado> findByIdEmpleado(Integer idEmpleado);
     Optional<Empleado> findByCorreoEmpleado(String correoEmpleado);

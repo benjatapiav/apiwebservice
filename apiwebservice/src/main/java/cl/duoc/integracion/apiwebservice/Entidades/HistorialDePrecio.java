@@ -18,26 +18,27 @@ public class HistorialDePrecio {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_historial_de_precio")
     private Integer idHistorialDePrecio;
+
+    @Column(name = "precio", nullable = false)
+    private Double precio;
+    
+    @Column(name = "fecha_inicio", nullable = false)
+    private LocalDate fechaInicio;
+    
+    @Column(name = "fecha_fin", nullable = false)
+    private LocalDate fechaFin;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_producto", nullable = false)
     private Producto producto;
 
-    @Column(name = "precio", nullable = false)
-    private double precio;
-
-    @Column(name = "fecha_inicio", nullable = false)
-    private LocalDate fechaInicio;
-
-    @Column(name = "fecha_fin", nullable = false)
-    private LocalDate fechaFin;
-
     //Constructor Vacio
     public HistorialDePrecio(){}
 
     //Constructor con parametros
-    public HistorialDePrecio(Integer idHistorialDePrecio, Producto producto, double precio, LocalDate fechaInicio,
+    public HistorialDePrecio(Integer idHistorialDePrecio, Producto producto, Double precio, LocalDate fechaInicio,
             LocalDate fechaFin) {
         this.idHistorialDePrecio = idHistorialDePrecio;
         this.producto = producto;
@@ -63,11 +64,11 @@ public class HistorialDePrecio {
         this.producto = producto;
     }
 
-    public double getPrecio() {
+    public Double getPrecio() {
         return precio;
     }
 
-    public void setPrecio(double precio) {
+    public void setPrecio(Double precio) {
         this.precio = precio;
     }
 

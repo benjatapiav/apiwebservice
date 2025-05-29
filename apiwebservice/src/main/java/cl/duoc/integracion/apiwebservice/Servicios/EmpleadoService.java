@@ -11,6 +11,7 @@ public interface EmpleadoService {
     List<Empleado> listarEmpleado();
     List<Empleado> listarEmpleadoPorNombre(String nombreEmpleado);
     List<Empleado> listarEmpleadoPorRol(String rolEmpleado);
+    List<Empleado> listarEmpleadoPorSucursal(String sucursalEmpleado);
     Optional<Empleado> obtenerEmpleadoPorCorreoYClave(String correoEmpleado, String claveEmpleado);
     Optional<Empleado> obtenerEmpleadoPorCorreo(String correoEmpleado);
     Optional<Empleado> obtenerEmpleadoPorRut(String rutEmpleado);

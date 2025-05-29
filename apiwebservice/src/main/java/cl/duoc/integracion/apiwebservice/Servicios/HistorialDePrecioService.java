@@ -11,7 +11,6 @@ import java.util.Optional;
 public interface HistorialDePrecioService {
         
     List<HistorialDePrecio> listarHistorialPorProducto(Producto producto);
-    List<HistorialDePrecio> listarHistorialPorProductoOrdenadoPorFechaDesc(Producto producto);
     Optional<HistorialDePrecio> obtenerPrecioPorFechaInicio(LocalDate fechaInicio);
     Optional<HistorialDePrecio> obtenerPrecioPorFechaFin(LocalDate fechaFin);
     void eliminarHistorialDePrecio(Integer idHistorialDePrecio);
