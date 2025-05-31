@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cl.duoc.integracion.apiwebservice.DTO.EmpleadoDTO;
 import cl.duoc.integracion.apiwebservice.Entidades.Empleado;
 import cl.duoc.integracion.apiwebservice.Repositorios.EmpleadoRepository;
 import cl.duoc.integracion.apiwebservice.Servicios.EmpleadoService;
@@ -23,18 +24,18 @@ public class EmpleadoServiceImpl implements EmpleadoService{
     }
 
     @Override
-    public List<Empleado> listarEmpleadoPorNombre(String nombreEmpleado){
-        return empleadoRepository.findByNombreEmpleado(nombreEmpleado);
+    public List<Empleado> listarEmpleadoPorNombreContainingIgnoreCase(String nombreEmpleado){
+        return empleadoRepository.findByNombreEmpleadoContainingIgnoreCase(nombreEmpleado);
     }
 
     @Override
-    public List<Empleado> listarEmpleadoPorRol(String rolEmpleado){
-        return empleadoRepository.findByRolEmpleado(rolEmpleado);
+    public List<Empleado> listarEmpleadoPorRolContainingIgnoreCase(String rolEmpleado){
+        return empleadoRepository.findByRolEmpleadoContainingIgnoreCase(rolEmpleado);
     }
 
     @Override
-    public List<Empleado> listarEmpleadoPorSucursal(String sucursalEmpleado){
-        return empleadoRepository.findBySucursalEmpleado(sucursalEmpleado);
+    public List<Empleado> listarEmpleadoPorSucursalContainingIgnoreCase(String sucursalEmpleado){
+        return empleadoRepository.findBySucursalEmpleadoContainingIgnoreCase(sucursalEmpleado);
     }
 
     @Override
@@ -48,8 +49,22 @@ public class EmpleadoServiceImpl implements EmpleadoService{
     }
 
     @Override
-    public Empleado crearEmpleado(Empleado empleado){
-        return empleadoRepository.save(empleado);
+    public Empleado crearEmpleado(EmpleadoDTO empleadoDTO){
+        Optional<Empleado> empleadoExistente = empleadoRepository.findByRutEmpleado(empleadoDTO.getRutEmpleado());
+        if(empleadoExistente.isPresent()){
+            throw new IllegalArgumentException("Ya existe un empleado con el rut: "+empleadoDTO.getRutEmpleado());
+        }else{
+
+            Empleado empleado = new Empleado();
+            empleado.setNombreEmpleado(empleadoDTO.getNombreEmpleado());;
+            empleado.setCorreoEmpleado(empleadoDTO.getCorreoEmpleado());
+            empleado.setRolEmpleado(empleadoDTO.getRolEmpleado());
+            empleado.setClaveEmpleado(empleadoDTO.getClaveEmpleado());
+            empleado.setRutEmpleado(empleadoDTO.getRutEmpleado());
+            empleado.setSucursalEmpleado(empleadoDTO.getSucursalEmpleado());
+            
+            return empleadoRepository.save(empleado);
+        }
     }
 
     @Override
@@ -100,13 +115,13 @@ public class EmpleadoServiceImpl implements EmpleadoService{
 
     @Override
     public Optional<Empleado> obtenerEmpleadoPorCorreoYClave(String correoEmpleado, String claveEmpleado){
-        Optional<Empleado> empleado = empleadoRepository.findByCorreoEmpleado(correoEmpleado);
+        Optional<Empleado> empleado = empleadoRepository.findByCorreoEmpleadoContainingIgnoreCase(correoEmpleado);
         return empleado.filter(e -> e.getClaveEmpleado().equals(claveEmpleado));
     }
 
     @Override
-    public Optional<Empleado> obtenerEmpleadoPorCorreo(String correoEmpleado){
-        return empleadoRepository.findByCorreoEmpleado(correoEmpleado);
+    public Optional<Empleado> obtenerEmpleadoPorCorreoContainingIgnoreCase(String correoEmpleado){
+        return empleadoRepository.findByCorreoEmpleadoContainingIgnoreCase(correoEmpleado);
     }
     
     

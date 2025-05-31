@@ -1,5 +1,6 @@
 package cl.duoc.integracion.apiwebservice.Servicios;
 
+import cl.duoc.integracion.apiwebservice.DTO.EmpleadoDTO;
 import cl.duoc.integracion.apiwebservice.Entidades.Empleado;
 
 import java.util.List;
@@ -9,14 +10,14 @@ import java.util.Optional;
 public interface EmpleadoService {
         
     List<Empleado> listarEmpleado();
-    List<Empleado> listarEmpleadoPorNombre(String nombreEmpleado);
-    List<Empleado> listarEmpleadoPorRol(String rolEmpleado);
-    List<Empleado> listarEmpleadoPorSucursal(String sucursalEmpleado);
+    List<Empleado> listarEmpleadoPorNombreContainingIgnoreCase(String nombreEmpleado);
+    List<Empleado> listarEmpleadoPorRolContainingIgnoreCase(String rolEmpleado);
+    List<Empleado> listarEmpleadoPorSucursalContainingIgnoreCase(String sucursalEmpleado);
     Optional<Empleado> obtenerEmpleadoPorCorreoYClave(String correoEmpleado, String claveEmpleado);
-    Optional<Empleado> obtenerEmpleadoPorCorreo(String correoEmpleado);
+    Optional<Empleado> obtenerEmpleadoPorCorreoContainingIgnoreCase(String correoEmpleado);
     Optional<Empleado> obtenerEmpleadoPorRut(String rutEmpleado);
     Optional<Empleado> obtenerEmpleadoPorId(Integer idEmpleado);
-    Empleado crearEmpleado(Empleado empleado);
+    Empleado crearEmpleado(EmpleadoDTO empleadoDTO);
     Empleado actualizarEmpleado(Integer idEmpleado, Empleado empleado);
     Empleado actualizarParteDeEmpleado(Integer idEmpleado, Map<String, Object> camposEmpleado);
     void eliminarEmpleado(Integer idEmpleado);

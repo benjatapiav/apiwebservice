@@ -8,11 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import cl.duoc.integracion.apiwebservice.Entidades.Empleado;
 
 public interface EmpleadoRepository extends JpaRepository<Empleado, Integer>{
-    List<Empleado> findByNombreEmpleado(String nombreEmpleado);
-    List<Empleado> findByRolEmpleado(String rolEmpleado);
-    List<Empleado> findBySucursalEmpleado(String sucursalEmpleado);
+    List<Empleado> findByNombreEmpleadoContainingIgnoreCase(String nombreEmpleado);
+    List<Empleado> findByRolEmpleadoContainingIgnoreCase(String rolEmpleado);
+    List<Empleado> findBySucursalEmpleadoContainingIgnoreCase(String sucursalEmpleado);
     Optional<Empleado> findByRutEmpleado(String rutEmpleado);
     Optional<Empleado> findByIdEmpleado(Integer idEmpleado);
-    Optional<Empleado> findByCorreoEmpleado(String correoEmpleado);
+    Optional<Empleado> findByCorreoEmpleadoContainingIgnoreCase(String correoEmpleado);
     Optional<Empleado> findByCorreoEmpleadoAndClaveEmpleado(String correoEmpleado, String claveEmpleado);
 }

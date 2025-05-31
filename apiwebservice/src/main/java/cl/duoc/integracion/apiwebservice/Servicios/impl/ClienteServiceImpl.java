@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cl.duoc.integracion.apiwebservice.DTO.ClienteDTO;
 import cl.duoc.integracion.apiwebservice.Entidades.Cliente;
 import cl.duoc.integracion.apiwebservice.Repositorios.ClienteRepository;
 import cl.duoc.integracion.apiwebservice.Servicios.ClienteService;
@@ -23,8 +24,8 @@ public class ClienteServiceImpl implements ClienteService{
     }
 
     @Override
-    public List<Cliente> listarClientePorNombre(String nombreCliente){
-        return clienteRepository.findByNombreCliente(nombreCliente);
+    public List<Cliente> listarClientePorNombreContainingIgnoreCase(String nombreCliente){
+        return clienteRepository.findByNombreClienteContainingIgnoreCase(nombreCliente);
     }
 
     @Override
@@ -33,13 +34,13 @@ public class ClienteServiceImpl implements ClienteService{
     }
 
     @Override
-    public Optional<Cliente> obtenerClientePorCorreo(String correoCliente){
-        return clienteRepository.findByCorreoCliente(correoCliente);
+    public Optional<Cliente> obtenerClientePorRut(String rutCliente){
+        return clienteRepository.findByRutCliente(rutCliente);
     }
 
     @Override
-    public Cliente actualizarCliente(Long idCliente, Cliente cliente){
-        return clienteRepository.save(cliente);
+    public Optional<Cliente> obtenerClientePorCorreoContainingIgnoreCase(String correoCliente){
+        return clienteRepository.findByCorreoClienteContainingIgnoreCase(correoCliente);
     }
 
     @Override
@@ -71,12 +72,35 @@ public class ClienteServiceImpl implements ClienteService{
     }
 
     @Override
-    public Cliente crearCliente(Cliente cliente){
-        return clienteRepository.save(cliente);
+    public Cliente crearCliente(ClienteDTO clienteDTO){
+        Optional<Cliente> clienteExistente = clienteRepository.findByRutCliente(clienteDTO.getRutCliente());
+        if(clienteExistente.isPresent()){
+            throw new IllegalArgumentException("Ya existe un cliente con el rut: "+clienteDTO.getRutCliente());
+        }else{
+            Cliente cliente = new Cliente();
+            cliente.setNombreCliente(clienteDTO.getNombreCliente());
+            cliente.setCorreoCliente(clienteDTO.getCorreoCliente());
+            cliente.setClaveCliente(clienteDTO.getClaveCliente());
+            cliente.setRutCliente(clienteDTO.getRutCliente());
+            cliente.setMensajeCliente(clienteDTO.getMensajeCliente());
+
+            return clienteRepository.save(cliente);
+        }
     }
 
     @Override
     public void eliminarCliente(Long idCliente){
         clienteRepository.deleteById(idCliente);
+    }
+
+    @Override
+    public Cliente actualizarCliente(Long idCliente,Cliente cliente){
+        Optional<Cliente> clienteData = clienteRepository.findByIdCliente(idCliente);
+        if(clienteData.isPresent()){
+            cliente.setIdCliente(idCliente);
+            return clienteRepository.save(cliente);
+        }else{
+            throw new RuntimeException("Cliente no encontrado con Id: " + idCliente);
+        }
     }
 }

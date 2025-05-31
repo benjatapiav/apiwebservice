@@ -84,19 +84,25 @@ public class ProductoServiceImpl implements ProductoService{
     }
 
     @Override
-    public Producto actualizarProducto(Long idProducto, Producto producto){
-        Optional<Producto> productoExistente = productoRepository.findById(idProducto);
-        if(productoExistente.isPresent()){
-            producto.setIdProducto(idProducto);
-            return productoRepository.save(producto);
-            
-        }
-        return null;
+    public Producto actualizarProducto(Long idProducto, Producto producto) {
+        Producto productoExistente = productoRepository.findByIdProducto(idProducto)
+            .orElseThrow(() -> new RuntimeException("Producto no encontrado con Id: " + idProducto));
+
+    
+        productoExistente.setCodigoProducto(producto.getCodigoProducto());
+        productoExistente.setNombreProducto(producto.getNombreProducto());
+        productoExistente.setMarcaProducto(producto.getMarcaProducto());
+        productoExistente.setCategoriaProducto(producto.getCategoriaProducto());
+        productoExistente.setCantidadProducto(producto.getCantidadProducto());
+        productoExistente.setSucursal(producto.getSucursal());
+        productoExistente.setPrecioProducto(producto.getPrecioProducto());
+
+        return productoRepository.save(productoExistente);
     }
 
     @Override
     public Producto actualizarParteDeProducto(Long idProducto, Map<String, Object> campos){
-        Optional<Producto> productoOptional = productoRepository.findById(idProducto);
+        Optional<Producto> productoOptional = productoRepository.findByIdProducto(idProducto);
         if(productoOptional.isPresent()){
             Producto producto = productoOptional.get();
 
@@ -146,8 +152,11 @@ public class ProductoServiceImpl implements ProductoService{
 
     @Override
     public void eliminarProducto(Long idProducto){
-        productoRepository.deleteById(idProducto);
-    }
+        if(!productoRepository.existsById(idProducto)){
+            throw new RuntimeException("Producto no encontrado con Id: " + idProducto);
+        }
+            productoRepository.deleteById(idProducto);
+        }
 
     
 }
