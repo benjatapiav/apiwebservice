@@ -2,10 +2,10 @@ package cl.duoc.integracion.apiwebservice.Servicios;
 
 
 import cl.duoc.integracion.apiwebservice.DTO.ProductoDTO;
+import cl.duoc.integracion.apiwebservice.DTO.ProductoPatchDTO;
 import cl.duoc.integracion.apiwebservice.Entidades.Producto;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface ProductoService {
@@ -19,7 +19,7 @@ public interface ProductoService {
     Optional<Producto> obtenerProductoPorCodigo(String codigoProducto);//Obtener producto por codigo
     Producto crearProducto(ProductoDTO productoDTO);// Crear un producto nuevo
     Producto actualizarProducto(Long idProducto,Producto producto);// Actualizar producto existente
-    Producto actualizarParteDeProducto(Long idProducto, Map<String, Object> campos);
+    Producto actualizarParteDeProducto(Long idProducto, ProductoPatchDTO productoPatchDTO);
     void eliminarProducto(Long idProducto); // Eliminar producto por Id
 
 }

@@ -3,16 +3,17 @@ package cl.duoc.integracion.apiwebservice.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 import cl.duoc.integracion.apiwebservice.DTO.ClienteDTO;
+import cl.duoc.integracion.apiwebservice.DTO.ClientePatchDTO;
 import cl.duoc.integracion.apiwebservice.Entidades.Cliente;
 import cl.duoc.integracion.apiwebservice.Servicios.ClienteService;
 
 import java.util.Optional;
 import jakarta.validation.Valid;
-import java.util.List;
-import java.util.Map;
+import java.util.List; 
 
 
 @RestController
@@ -61,7 +62,7 @@ public class ClienteController {
     @GetMapping("/nombreCliente/{nombreCliente}")
     public ResponseEntity<List<Cliente>> listarClientePorNombre(@PathVariable String nombreCliente){
         List<Cliente> clienteData = clienteService.listarClientePorNombreContainingIgnoreCase(nombreCliente);
-        if(clienteData.isEmpty()){
+        if(!clienteData.isEmpty()){
             return new ResponseEntity<>(clienteData,HttpStatus.OK);
         }else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -69,6 +70,7 @@ public class ClienteController {
     }
 
     @PostMapping
+    
      public ResponseEntity<String> crearCliente(@Valid @RequestBody ClienteDTO clienteDTO) {
     clienteService.crearCliente(clienteDTO);
     return new ResponseEntity<>("Empleado de Nombre: "+clienteDTO.getNombreCliente()+ " \ncreado con exito", HttpStatus.CREATED);
@@ -79,13 +81,13 @@ public class ClienteController {
         Cliente clienteActualizado = clienteService.actualizarCliente(idCliente, cliente);
         return new ResponseEntity<>(clienteActualizado,HttpStatus.OK);
     }
-
+    
     @PatchMapping("/{idCliente}")
-    public ResponseEntity<Cliente> actualizarParteDeCliente(@PathVariable Long idCliente, @RequestBody Map<String,Object> camposCliente){
-        Cliente clienteActualizado = clienteService.actualizarParteDeCliente(idCliente, camposCliente);
+    public ResponseEntity<Cliente> actualizarParteDeCliente(@PathVariable Long idCliente, @RequestBody ClientePatchDTO clientePatchDTO){
+        Cliente clienteActualizado = clienteService.actualizarParteDeCliente(idCliente, clientePatchDTO);
         return new ResponseEntity<>(clienteActualizado,HttpStatus.OK);
     }
-
+    
     @DeleteMapping("/{idCliente}")
     public ResponseEntity<String> eliminarCliente(@PathVariable Long idCliente){
         clienteService.eliminarCliente(idCliente);

@@ -7,17 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import cl.duoc.integracion.apiwebservice.DTO.EmpleadoDTO;
+import cl.duoc.integracion.apiwebservice.DTO.EmpleadoPatchDTO;
 import cl.duoc.integracion.apiwebservice.Entidades.Empleado;
 import cl.duoc.integracion.apiwebservice.Servicios.EmpleadoService;
 
 import java.util.Optional;
 import jakarta.validation.Valid;
 import java.util.List;
-import java.util.Map;
-
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
 
 
 
@@ -115,19 +111,19 @@ public class EmpleadoController {
         empleadoService.crearEmpleado(empleadoDTO);
         return new ResponseEntity<>("Empleado de Nombre: "+empleadoDTO.getNombreEmpleado()+ "\nRol: " + empleadoDTO.getRolEmpleado() + " \ncreado con exito", HttpStatus.CREATED);
     }
-
+    
     @PutMapping("/{id}")
     public ResponseEntity<Empleado> actualizarEmpleado(@PathVariable Integer id, @RequestBody Empleado empleado) {
         Empleado empleadoActualizado = empleadoService.actualizarEmpleado(id, empleado);
         return new ResponseEntity<>(empleadoActualizado,HttpStatus.OK);
     }
-
+    
     @PatchMapping("/{id}")
-    public ResponseEntity<Empleado> actualizarParteDeEmpleado(@PathVariable Integer id, @RequestBody Map<String,Object> camposEmpleado){
-        Empleado empleadoActualizado = empleadoService.actualizarParteDeEmpleado(id, camposEmpleado);
+    public ResponseEntity<Empleado> actualizarParteDeEmpleado(@PathVariable Integer id, @RequestBody EmpleadoPatchDTO empleadoPatchDTO){
+        Empleado empleadoActualizado = empleadoService.actualizarParteDeEmpleado(id, empleadoPatchDTO);
         return new ResponseEntity<>(empleadoActualizado,HttpStatus.OK);
     }
-
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarEmpleado(@PathVariable Integer id){
         empleadoService.eliminarEmpleado(id);

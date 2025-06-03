@@ -1,13 +1,13 @@
 package cl.duoc.integracion.apiwebservice.Servicios.impl;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cl.duoc.integracion.apiwebservice.DTO.ClienteDTO;
+import cl.duoc.integracion.apiwebservice.DTO.ClientePatchDTO;
 import cl.duoc.integracion.apiwebservice.Entidades.Cliente;
 import cl.duoc.integracion.apiwebservice.Repositorios.ClienteRepository;
 import cl.duoc.integracion.apiwebservice.Servicios.ClienteService;
@@ -44,32 +44,28 @@ public class ClienteServiceImpl implements ClienteService{
     }
 
     @Override
-    public Cliente actualizarParteDeCliente(Long idCliente, Map<String,Object> camposCliente){
-        Optional<Cliente> clienteOptional = clienteRepository.findById(idCliente);
-        if(clienteOptional.isPresent()){
-            Cliente cliente = clienteOptional.get();
+    public Cliente actualizarParteDeCliente(Long idCliente, ClientePatchDTO clientePatchDTO){
+        Cliente clienteExistente = clienteRepository.findByIdCliente(idCliente)
+            .orElseThrow(()-> new RuntimeException("No existe un cliente con id: "+idCliente));
 
-            camposCliente.forEach((key,value) ->{
-                switch(key){
-                    case "nombre_cliente":
-                        cliente.setNombreCliente(value.toString());
-                        break;
-                    case "correo_cliente":
-                        cliente.setCorreoCliente(value.toString());
-                        break;
-                    case "rut_cliente":
-                        cliente.setRutCliente(value.toString());
-                        break;
-                    case "clave_cliente":
-                        cliente.setClaveCliente(value.toString());
-                        break;
-                }       
-            });
-            return clienteRepository.save(cliente);
-        }else{
-            throw new RuntimeException("Cliente no encontrado con Id: "+ idCliente);
+            if(clientePatchDTO.getNombreCliente() != null){
+                clienteExistente.setNombreCliente(clientePatchDTO.getNombreCliente());
+            }
+            if(clientePatchDTO.getCorreoCliente() != null){
+                clienteExistente.setCorreoCliente(clientePatchDTO.getCorreoCliente());
+            }
+            if(clientePatchDTO.getClaveCliente() != null){
+                clienteExistente.setClaveCliente(clientePatchDTO.getClaveCliente());
+            }
+            if(clientePatchDTO.getRutCliente() != null){
+                clienteExistente.setRutCliente(clientePatchDTO.getRutCliente());
+            }
+            if(clientePatchDTO.getMensajeCliente() != null){
+                clienteExistente.setMensajeCliente(clientePatchDTO.getMensajeCliente());
+            }
+
+            return clienteRepository.save(clienteExistente);
         }
-    }
 
     @Override
     public Cliente crearCliente(ClienteDTO clienteDTO){
@@ -95,12 +91,15 @@ public class ClienteServiceImpl implements ClienteService{
 
     @Override
     public Cliente actualizarCliente(Long idCliente,Cliente cliente){
-        Optional<Cliente> clienteData = clienteRepository.findByIdCliente(idCliente);
-        if(clienteData.isPresent()){
-            cliente.setIdCliente(idCliente);
-            return clienteRepository.save(cliente);
-        }else{
-            throw new RuntimeException("Cliente no encontrado con Id: " + idCliente);
-        }
+        Cliente clienteExistente = clienteRepository.findByIdCliente(idCliente)
+            .orElseThrow(()-> new RuntimeException("No existe cliente con Id: "+idCliente));
+
+            clienteExistente.setNombreCliente(cliente.getNombreCliente());
+            clienteExistente.setCorreoCliente(cliente.getCorreoCliente());
+            clienteExistente.setClaveCliente(cliente.getClaveCliente());
+            clienteExistente.setMensajeCliente(cliente.getMensajeCliente());
+            clienteExistente.setRutCliente(cliente.getRutCliente());
+
+            return clienteRepository.save(clienteExistente);
     }
 }

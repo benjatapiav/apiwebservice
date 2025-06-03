@@ -2,18 +2,18 @@ package cl.duoc.integracion.apiwebservice.Servicios.impl;
 
 
 import cl.duoc.integracion.apiwebservice.DTO.ProductoDTO;
-import cl.duoc.integracion.apiwebservice.Entidades.HistorialDePrecio;
+import cl.duoc.integracion.apiwebservice.DTO.ProductoPatchDTO;
 import cl.duoc.integracion.apiwebservice.Entidades.Producto;
-import cl.duoc.integracion.apiwebservice.Repositorios.HistorialDePrecioRepository;
+import cl.duoc.integracion.apiwebservice.Servicios.HistorialDePrecioService;
 import cl.duoc.integracion.apiwebservice.Repositorios.ProductoRepository;
 import cl.duoc.integracion.apiwebservice.Servicios.ProductoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
+
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.Objects;
 
 @Service
 public class ProductoServiceImpl implements ProductoService{
@@ -22,8 +22,7 @@ public class ProductoServiceImpl implements ProductoService{
     private ProductoRepository productoRepository;
 
     @Autowired
-    private HistorialDePrecioRepository historialDePrecioRepository;
-
+    private HistorialDePrecioService historialDePrecioService;
 
     // === PRODUCTO ===
 
@@ -77,8 +76,14 @@ public class ProductoServiceImpl implements ProductoService{
             producto.setMarcaProducto(productoDTO.getMarcaProducto());
             producto.setPrecioProducto(productoDTO.getPrecioProducto());
             producto.setSucursal(productoDTO.getSucursal());
-    
-            return productoRepository.save(producto);
+
+
+            Producto productoGuardado = productoRepository.save(producto);
+
+        // Crear historial inicial
+            historialDePrecioService.actualizarPrecioYHistorial(productoGuardado, producto.getPrecioProducto());
+
+            return productoGuardado;
         }
 
     }
@@ -88,7 +93,9 @@ public class ProductoServiceImpl implements ProductoService{
         Producto productoExistente = productoRepository.findByIdProducto(idProducto)
             .orElseThrow(() -> new RuntimeException("Producto no encontrado con Id: " + idProducto));
 
-    
+        
+        boolean precioCambiado = !productoExistente.getPrecioProducto().equals(producto.getPrecioProducto());
+
         productoExistente.setCodigoProducto(producto.getCodigoProducto());
         productoExistente.setNombreProducto(producto.getNombreProducto());
         productoExistente.setMarcaProducto(producto.getMarcaProducto());
@@ -97,66 +104,60 @@ public class ProductoServiceImpl implements ProductoService{
         productoExistente.setSucursal(producto.getSucursal());
         productoExistente.setPrecioProducto(producto.getPrecioProducto());
 
-        return productoRepository.save(productoExistente);
+        Producto productoActualizado = productoRepository.save(productoExistente);
+
+        if(precioCambiado){
+            historialDePrecioService.actualizarPrecioYHistorial(productoActualizado, producto.getPrecioProducto());
+        }
+      
+        return productoActualizado;
     }
 
     @Override
-    public Producto actualizarParteDeProducto(Long idProducto, Map<String, Object> campos){
-        Optional<Producto> productoOptional = productoRepository.findByIdProducto(idProducto);
-        if(productoOptional.isPresent()){
-            Producto producto = productoOptional.get();
+    public Producto actualizarParteDeProducto(Long idProducto, ProductoPatchDTO productoPatchDTO){
+        Producto productoExistente = productoRepository.findByIdProducto(idProducto)
+            .orElseThrow(()-> new RuntimeException("No existe un producto con Id: "+idProducto));
+        
+            boolean precioCambiado = false;
 
-            campos.forEach((key,value) ->{
-                switch (key){
-                    case "nombreProducto":
-                        producto.setNombreProducto(value.toString());
-                        break;
-                    case "codigoProducto":
-                        producto.setCodigoProducto(value.toString());
-                        break;
-                    case "marcaProducto":
-                        producto.setMarcaProducto(value.toString());
-                        break;
-                    case "categoriaProducto":
-                        producto.setCategoriaProducto(value.toString());
-                        break;
-                    case "sucursal":
-                        producto.setSucursal(value.toString());
-                        break;
-                    case "precioProducto":
-                        try{
-                            Double nuevoPrecio = Double.valueOf(value.toString());
-                            if(!producto.getPrecioProducto().equals(nuevoPrecio)){
-                                HistorialDePrecio historial = new HistorialDePrecio();
-                                historial.setProducto(producto);
-                                historial.setPrecio(producto.getPrecioProducto());
-                                historial.setFechaInicio(LocalDate.now());
-                                historial.setFechaFin(LocalDate.now());
+            if(productoPatchDTO.getCodigoProducto() != null){
+                productoExistente.setCodigoProducto(productoPatchDTO.getCodigoProducto());
+            }
+            if(productoPatchDTO.getNombreProducto() != null){
+                productoExistente.setNombreProducto(productoPatchDTO.getNombreProducto());
+            }
+            if(productoPatchDTO.getMarcaProducto() != null){
+                productoExistente.setMarcaProducto(productoPatchDTO.getMarcaProducto());
+            }
+            if(productoPatchDTO.getCategoriaProducto() != null){
+                productoExistente.setCategoriaProducto(productoPatchDTO.getCategoriaProducto());
+            }
+            if(productoPatchDTO.getCantidadProducto() != null){
+                productoExistente.setCantidadProducto(productoPatchDTO.getCantidadProducto());
+            }
+            if(productoPatchDTO.getPrecioProducto() != null){
+                precioCambiado = !Objects.equals(productoExistente.getPrecioProducto(),productoPatchDTO.getPrecioProducto());
+                productoExistente.setPrecioProducto(productoPatchDTO.getPrecioProducto());
+            }
+            if(productoPatchDTO.getSucursal() != null){
+                productoExistente.setSucursal(productoPatchDTO.getSucursal());
+            }
 
-                                historialDePrecioRepository.save(historial);
-                                
-                                producto.setPrecioProducto(nuevoPrecio);
-                            }
-                        }catch(NumberFormatException e){
-                            throw new IllegalArgumentException("Precio Invalido "+value);
-                        }
-                        break;
-                }
-            });
-            return productoRepository.save(producto);
-        }else{
-            throw new RuntimeException("Producto no encontrado con Id: "+ idProducto);
+            
+            Producto productoActualizado = productoRepository.save(productoExistente);
+            if(precioCambiado){
+                historialDePrecioService.actualizarPrecioYHistorial(productoActualizado, productoPatchDTO.getPrecioProducto());
+            }
 
-        }
+        return productoActualizado;
     }
+
 
     @Override
     public void eliminarProducto(Long idProducto){
-        if(!productoRepository.existsById(idProducto)){
-            throw new RuntimeException("Producto no encontrado con Id: " + idProducto);
-        }
+        Optional<Producto> producto = productoRepository.findByIdProducto(idProducto);
+        if(producto.isPresent()){
             productoRepository.deleteById(idProducto);
         }
-
-    
+    }
 }

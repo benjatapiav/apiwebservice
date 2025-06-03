@@ -13,7 +13,7 @@ import cl.duoc.integracion.apiwebservice.Entidades.Producto;
 @Repository
 public interface HistorialDePrecioRepository extends JpaRepository<HistorialDePrecio, Integer> {
     List<HistorialDePrecio> findByProducto(Producto producto);
-    Optional<HistorialDePrecio> findByfechaInicio(LocalDate fechaInicio);
-    Optional<HistorialDePrecio> findByfechaFin(LocalDate fechaFin);
-    
+    Optional<HistorialDePrecio> findByFechaInicio(LocalDate fechaInicio);
+    Optional<HistorialDePrecio> findByFechaFin(LocalDate fechaFin);
+    Optional<HistorialDePrecio> findByProductoAndFechaFinIsNull(Producto producto); // Historial activo
 }

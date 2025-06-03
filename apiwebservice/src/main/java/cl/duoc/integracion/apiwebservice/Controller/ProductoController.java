@@ -7,15 +7,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import cl.duoc.integracion.apiwebservice.DTO.ProductoDTO;
+import cl.duoc.integracion.apiwebservice.DTO.ProductoPatchDTO;
+import cl.duoc.integracion.apiwebservice.Entidades.HistorialDePrecio;
 import cl.duoc.integracion.apiwebservice.Entidades.Producto;
+import cl.duoc.integracion.apiwebservice.Servicios.HistorialDePrecioService;
 import cl.duoc.integracion.apiwebservice.Servicios.ProductoService;
 
 import java.util.Optional;
 
 import jakarta.validation.Valid;
 import java.util.List;
-import java.util.Map;
-
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/productos")
@@ -23,6 +25,9 @@ public class ProductoController{
 
     @Autowired
     private ProductoService productoService;
+
+    @Autowired
+    private HistorialDePrecioService historialDePrecioService;
 
     //Listar todos los productos
     @GetMapping
@@ -105,26 +110,41 @@ public class ProductoController{
         }
     }
 
+    @GetMapping("/{id}/historialPrecios")
+    public ResponseEntity<List<HistorialDePrecio>> obtenerHistorial(@PathVariable Long id) {
+            Optional<Producto> producto = productoService.obtenerProductoPorId(id);
+            if(producto.isPresent()){
+                List<HistorialDePrecio> historial = historialDePrecioService.listarHistorialPorProducto(producto.get());
+                return new ResponseEntity<>(historial,HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+        
+
+    
+
     // Crear un nuevo producto POST
+    
     @PostMapping
     public ResponseEntity<String> crearProducto(@Valid @RequestBody ProductoDTO productoDTO) {
             productoService.crearProducto(productoDTO);
             return new ResponseEntity<>("Producto de codigo: " + productoDTO.getCodigoProducto() + " creado con exito", HttpStatus.CREATED);
     }
-
+    
     @PutMapping("/{id}")
     public ResponseEntity<Producto> actualizarProducto(@PathVariable Long id, @Valid @RequestBody Producto producto) {
                 Producto productoActualizado = productoService.actualizarProducto(id, producto);
                 
                 return new ResponseEntity<>(productoActualizado, HttpStatus.OK);
     }
-
+    
     @PatchMapping("/{id}")
-    public ResponseEntity<Producto> actualizarParteProducto(@PathVariable Long id,@RequestBody Map<String, Object> campos) {
-            Producto productoActualizado = productoService.actualizarParteDeProducto(id, campos);
+    public ResponseEntity<Producto> actualizarParteDeProducto(@PathVariable Long id,@RequestBody ProductoPatchDTO productoPatchDTO) {
+            Producto productoActualizado = productoService.actualizarParteDeProducto(id, productoPatchDTO);
             return new ResponseEntity<>(productoActualizado, HttpStatus.OK);
     }
-
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarProducto(@PathVariable Long id) {
             productoService.eliminarProducto(id);

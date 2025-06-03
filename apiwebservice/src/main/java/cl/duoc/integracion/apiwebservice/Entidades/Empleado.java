@@ -13,25 +13,25 @@ public class Empleado {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_empleado")
+    @Column(name = "id_empleado", nullable = false)
     private Integer idEmpleado;
 
-    @Column(name = "nombre_empleado")
+    @Column(name = "nombre_empleado", nullable = false)
     private String nombreEmpleado;
     
-    @Column(name = "correo_empleado")
+    @Column(name = "correo_empleado", nullable = false)
     private String correoEmpleado;
 
-    @Column(name = "rut_empleado")
+    @Column(name = "rut_empleado", nullable = false)
     private String rutEmpleado;
 
-    @Column(name = "clave_empleado")
+    @Column(name = "clave_empleado", nullable = false)
     private String claveEmpleado;
 
-    @Column(name = "rol_empleado")
+    @Column(name = "rol_empleado", nullable = false)
     private String rolEmpleado;
 
-    @Column(name = "sucursal_empleado")
+    @Column(name = "sucursal_empleado", nullable = false)
     private String sucursalEmpleado;
 
     //Constructo vacio
