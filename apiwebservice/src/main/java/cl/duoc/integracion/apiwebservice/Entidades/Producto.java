@@ -2,11 +2,16 @@ package cl.duoc.integracion.apiwebservice.Entidades;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 
 @Entity
@@ -41,7 +46,9 @@ public class Producto {
     @Column(name = "precio_producto", nullable = false)
     private Double precioProducto;
 
-    
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true )
+    @JsonIgnore
+    private List<HistorialDePrecio> historialDePrecios;
 
     //Constructor vacio
     public Producto(){}
@@ -125,6 +132,15 @@ public class Producto {
         this.precioProducto = precioProducto;
     }
 
+    public List<HistorialDePrecio> getHistorialDePrecios() {
+        return historialDePrecios;
+    }
+
+    public void setHistorialDePrecios(List<HistorialDePrecio> historialDePrecios) {
+        this.historialDePrecios = historialDePrecios;
+    }
+
+    
 
     
 }

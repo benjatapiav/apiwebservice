@@ -155,9 +155,11 @@ public class ProductoServiceImpl implements ProductoService{
 
     @Override
     public void eliminarProducto(Long idProducto){
-        Optional<Producto> producto = productoRepository.findByIdProducto(idProducto);
-        if(producto.isPresent()){
-            productoRepository.deleteById(idProducto);
+        Optional<Producto> productoOpcional = productoRepository.findByIdProducto(idProducto);
+        if(productoOpcional.isPresent()){
+            Producto producto = productoOpcional.get();
+            producto.getHistorialDePrecios().size();
+            productoRepository.delete(producto);
         }
     }
 }

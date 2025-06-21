@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import cl.duoc.integracion.apiwebservice.DTO.EmpleadoDTO;
@@ -18,6 +19,8 @@ public class EmpleadoServiceImpl implements EmpleadoService{
     @Autowired
     private EmpleadoRepository empleadoRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     
      @Override
     public List<Empleado> listarEmpleado(){
@@ -63,6 +66,8 @@ public class EmpleadoServiceImpl implements EmpleadoService{
             empleado.setClaveEmpleado(empleadoDTO.getClaveEmpleado());
             empleado.setRutEmpleado(empleadoDTO.getRutEmpleado());
             empleado.setSucursalEmpleado(empleadoDTO.getSucursalEmpleado());
+
+            empleado.setClaveEmpleado(passwordEncoder.encode(empleadoDTO.getClaveEmpleado()));
             
             return empleadoRepository.save(empleado);
         }
@@ -79,6 +84,9 @@ public class EmpleadoServiceImpl implements EmpleadoService{
             empleadoExistente.setRolEmpleado(empleado.getRolEmpleado());
             empleadoExistente.setSucursalEmpleado(empleado.getSucursalEmpleado());
             empleadoExistente.setClaveEmpleado(empleado.getClaveEmpleado());
+
+            empleadoExistente.setClaveEmpleado(passwordEncoder.encode(empleado.getClaveEmpleado()));
+
             return empleadoRepository.save(empleadoExistente);
     }
 
@@ -94,7 +102,7 @@ public class EmpleadoServiceImpl implements EmpleadoService{
             empleadoExistente.setCorreoEmpleado(empleadoPatchDTO.getCorreoEmpleado());
         }
         if (empleadoPatchDTO.getClaveEmpleado() != null) {
-            empleadoExistente.setClaveEmpleado(empleadoPatchDTO.getClaveEmpleado());
+            empleadoExistente.setClaveEmpleado(passwordEncoder.encode(empleadoPatchDTO.getClaveEmpleado()));
         }
         if(empleadoPatchDTO.getRolEmpleado() != null){
             empleadoExistente.setRolEmpleado(empleadoPatchDTO.getRolEmpleado());
