@@ -15,9 +15,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
     @Configuration
     @EnableWebSecurity
     public class SeguridadConfig {
-        
+
         @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+        SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
             http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
@@ -38,7 +38,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
         }
 
         @Bean
-        public PasswordEncoder passwordEncoder(){
+        PasswordEncoder passwordEncoder(){
             return new BCryptPasswordEncoder();
         }
     }
