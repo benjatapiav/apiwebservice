@@ -52,7 +52,7 @@ public class GlobalExceptionTest {
         assertEquals("El nombre del empleado es obligatorio", respuesta.getBody().get("nombreEmpleado"));
         assertEquals("El correo del empleado es obligatorio", respuesta.getBody().get("correoEmpleado"));
     }
-
+ 
     @Test
     void manejarIllegalArgumentException_deberiaRetornarConflict(){
         IllegalArgumentException ex = new IllegalArgumentException("Empleado ya existe");
